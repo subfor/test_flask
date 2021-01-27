@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 import requests
-from os import path
 
 
 currency = {"eur_to_usd", "eur_to_gbp", "eur_to_php"}
