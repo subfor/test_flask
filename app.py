@@ -3,28 +3,28 @@ import requests
 from os import path
 
 
-currency = {"eur_to_usd", "eur_to_gbp"}
+currency = {"eur_to_usd", "eur_to_gbp", "eur_to_php"}
 
 app = Flask(__name__, template_folder='template')
 
 
 class Currency:
     def __init__(self, cur_to_exchange="USD", amount=0):
-        self.cur_to_exchange = cur_to_exchange
-        self.amount = amount
+        self._cur_to_exchange = cur_to_exchange
+        self._amount = amount
 
     def __str__(self):
-        b = self.get_cur_rate()
-        return f"{self.cur_to_exchange},{self.amount},{b * float(self.amount)} \n"
+        b = self._get_cur_rate()
+        return f"{self._cur_to_exchange},{b},{self._amount},{round(b * float(self._amount), 4)} \n"
 
-    def get_cur_rate(self):
+    def _get_cur_rate(self):
         url = "https://api.exchangeratesapi.io/latest"
-        r = requests.get(url)
-        a = r.json()
-        return a["rates"][self.cur_to_exchange]
+        response = requests.get(url)
+        rate = response.json()
+        return rate["rates"][self._cur_to_exchange]
 
     def write_to_history(self):
-        with open(path.join(".", "history.txt"), "a") as txt_file:
+        with open("history.txt", "a") as txt_file:
             txt_file.write(self.__str__())
         return None
 
@@ -34,21 +34,19 @@ def index():
     return 'Hello, World!'
 
 
-@app.route('/<route_id>/<amount>')
+@app.route('/<route_id>/<int:amount>')
 def get_route(route_id, amount):
     if route_id not in currency:
         return "error"
     else:
-        a = Currency(route_id[7:].upper(), amount)
-        a.write_to_history()
-
-        print(a)
-    return str(a)
+        cur_to_exchanche = Currency(route_id[7:].upper(), amount)
+        cur_to_exchanche.write_to_history()
+    return str(cur_to_exchanche)
 
 
 @app.route('/history')
 def read_history():
-    with open(path.join("history.txt"), 'r') as file:
+    with open("history.txt", 'r') as file:
         lines = file.readlines()
     return render_template('history_templ.html', exchange_history=lines)
 
