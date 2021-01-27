@@ -33,7 +33,7 @@ def index():
     return 'Hello, World!'
 
 
-@app.route('/<route_id>/<int:amount>')
+@app.route('/<route_id>/<amount>')
 def get_route(route_id, amount):
     if route_id not in currency:
         return "error"
