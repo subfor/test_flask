@@ -6,6 +6,15 @@ currency = {"eur_to_usd", "eur_to_gbp", "eur_to_php"}
 
 app = Flask(__name__, template_folder='template')
 
+def check_amount(amaunt_str: str):
+    try:
+        float(amaunt_str)
+        return True
+    except ValueError:
+        return False
+
+
+
 
 class Currency:
     def __init__(self, cur_to_exchange="USD", amount=0):
@@ -35,7 +44,7 @@ def index():
 
 @app.route('/<route_id>/<amount>')
 def get_route(route_id, amount):
-    if route_id not in currency:
+    if route_id not in currency or not check_amount(amount):
         return "error"
     else:
         cur_to_exchanche = Currency(route_id[7:].upper(), amount)
