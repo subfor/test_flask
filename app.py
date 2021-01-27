@@ -1,23 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 import requests
-
 
 currency = {"eur_to_usd", "eur_to_gbp", "eur_to_php"}
 
 app = Flask(__name__, template_folder='template')
 
-def check_amount(amaunt_str: str):
-    try:
-        float(amaunt_str)
-        return True
-    except ValueError:
-        return False
-
-
-
 
 class Currency:
-    def __init__(self, cur_to_exchange="USD", amount=0):
+    def __init__(self, cur_to_exchange, amount):
         self._cur_to_exchange = cur_to_exchange
         self._amount = amount
 
@@ -42,10 +32,11 @@ def index():
     return 'Hello, World!'
 
 
-@app.route('/<route_id>/<amount>')
+@app.route('/<route_id>/<float:amount>')
+@app.route('/<route_id>/<int:amount>')
 def get_route(route_id, amount):
-    if route_id not in currency or not check_amount(amount):
-        return "error"
+    if route_id not in currency:
+        abort(404)
     else:
         cur_to_exchanche = Currency(route_id[7:].upper(), amount)
         cur_to_exchanche.write_to_history()
