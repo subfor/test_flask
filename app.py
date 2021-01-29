@@ -39,6 +39,8 @@ def get_route(route_id, amount):
         abort(404)
     else:
         cur_to_exchanche = Currency(route_id[7:].upper(), amount)
+        a = cur_to_exchanche
+        print(type(a))
         cur_to_exchanche.write_to_history()
     return str(cur_to_exchanche)
 
