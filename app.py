@@ -103,7 +103,7 @@ def get_history_by_currency(cur):
         result = ""
         connection = get_db()
         cursor = connection.cursor()
-        resp = cursor.execute(f"""
+        resp = cursor.execute("""
                     select exchange.currency_to, exchange.exchange_rate, exchange.amount, exchange.result
                     from exchange
                     where exchange.currency_to like ?
@@ -121,7 +121,7 @@ def get_history_by_amount(amount):
     result = ""
     connection = get_db()
     cursor = connection.cursor()
-    resp = cursor.execute(f"""
+    resp = cursor.execute("""
                     select exchange.currency_to, exchange.exchange_rate, exchange.amount, exchange.result
                     from exchange
                     where exchange.amount >= ?
@@ -138,7 +138,7 @@ def get_statistic():
     result = ""
     connection = get_db()
     cursor = connection.cursor()
-    resp = cursor.execute(f"""
+    resp = cursor.execute("""
                         select exchange.currency_to , 
                         count(exchange.currency_to) as count_exchange,
                         sum(exchange.result) as sum_result
@@ -152,5 +152,5 @@ def get_statistic():
 
 
 if __name__ == '__main__':
-    # init_db()
+    init_db()
     app.run(debug=True)
